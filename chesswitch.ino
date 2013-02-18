@@ -3,7 +3,7 @@ const int buttonPin = 2;     // the number of the pushbutton pin
 const int ledPin =  13;      // the number of the LED pin
 const int green  = 8;
 const int red  = 7;
-const int gameTime = 4; // change this to decide game time
+const int gameTime = 100; // change this to decide game time
 // variables will change:
 int buttonState = 0;         // variable for reading the pushbutton status
 int p1 = 0;
@@ -83,6 +83,7 @@ void gameOver(String p){
     Serial.print("player ");
     Serial.print(p);
     Serial.println(" is out of time!");
+    pinMode(ledPin, LOW);
     while (1){
       Serial.println("Game Over!");
       lightParty();
@@ -91,12 +92,12 @@ void gameOver(String p){
 
 
 void lightParty(){
- for(int i = 30; i < 400; i+= 20){
+ for(int i = 0; i < 100; i+= 10){
   pinMode(ledPin, HIGH);  
-  delay(400 - i);
+  delay(300 - i);
   pinMode(ledPin, LOW);  
-  delay(400 - i);
+  delay(300 - i);
   pinMode(ledPin, HIGH);  
-  delay(400 - i);
+  delay(300 - i);
  }  
 }
