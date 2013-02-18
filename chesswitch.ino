@@ -17,6 +17,7 @@ void setup() {
   else{
     bVal = 0;
   }
+  pinMode(4, OUTPUT); // set a pin for buzzer output
   pinMode(ledPin, OUTPUT); 
   pinMode(green, OUTPUT);
   pinMode(red, OUTPUT);   
@@ -27,6 +28,7 @@ void setup() {
   Serial.begin(9600);
 }
 void loop(){
+
   // read the state of the pushbutton value:
   buttonState = digitalRead(buttonPin);
   // check if the pushbutton is pressed.
@@ -35,7 +37,8 @@ void loop(){
     digitalWrite(ledPin, HIGH);
     p1up();
   if (p1 >= gameTime){
-     }  
+  gameOver("Player One");   
+  }  
   } 
   while(digitalRead(buttonPin) == 0){
      digitalWrite(ledPin, LOW);
@@ -46,10 +49,12 @@ void loop(){
   }
   if (p1 >= gameTime){
     digitalWrite(ledPin, LOW); 
+    buzz(4, 2500, 500); // buzz the buzzer on pin 4 at 2500Hz for 1000 milliseconds
     Serial.print("player one is out of time!");
   }
   else if (p2 >= gameTime){
     digitalWrite(ledPin, LOW); 
+    buzz(4, 2500, 500); // buzz the buzzer on pin 4 at 2500Hz for 1000 milliseconds
     Serial.print("player two is out of time!");
     while (1){
       Serial.print("Game Over!");
@@ -79,6 +84,7 @@ void p2up(){
 }
 void gameOver(String p){
     digitalWrite(ledPin, HIGH); 
+     buzz(4, 2500, 500);
     Serial.println();
     Serial.print("player ");
     Serial.print(p);
@@ -87,6 +93,7 @@ void gameOver(String p){
     while (1){
       Serial.println("Game Over!");
       lightParty();
+      buzz(4, 2500, 500);
   }
 }
 
@@ -100,4 +107,19 @@ void lightParty(){
   pinMode(ledPin, HIGH);  
   delay(300 - i);
  }  
+}
+
+void buzz(int targetPin, long frequency, long length) {
+  long delayValue = 1000000/frequency/2; // calculate the delay value between transitions
+  //// 1 second's worth of microseconds, divided by the frequency, then split in half since
+  //// there are two phases to each cycle
+  long numCycles = frequency * length/ 1000; // calculate the number of cycles for proper timing
+  //// multiply frequency, which is really cycles per second, by the number of seconds to 
+  //// get the total number of cycles to produce
+ for (long i=0; i < numCycles; i++){ // for the calculated length of time...
+    digitalWrite(targetPin,HIGH); // write the buzzer pin high to push out the diaphram
+    delayMicroseconds(delayValue); // wait for the calculated delay value
+    digitalWrite(targetPin,LOW); // write the buzzer pin low to pull back the diaphram
+    delayMicroseconds(delayValue); // wait againf or the calculated delay value
+  }
 }
